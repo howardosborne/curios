@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="icon" type="image/png" href="/travels/theme/img/triphop_icon.png">
+    <script src="/travels/theme/js/jquery-3.4.1.min.js"></script>
+    <script src="/travels/theme/js/bootstrap-4.6.0.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="/travels/theme/css/site.css">
+    <link rel="stylesheet" href="/travels/theme/css/syntax.css">
+    <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>All posts by year | TripHop Travels</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="All posts by year" />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://triphop.info/travels/list/posts.html" />
+<meta property="og:url" content="https://triphop.info/travels/list/posts.html" />
+<meta property="og:site_name" content="TripHop Travels" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="All posts by year" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","headline":"All posts by year","url":"https://triphop.info/travels/list/posts.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top justify-content-between">
+    <div class="container">
+        <!--<a class="navbar-brand font-weight-bold" href="/travels/">TripHop Travels</a>-->
+        <a href="/travels/">
+            <img src="/travels/theme/img/triphop_3.png" style="height:40px" alt="TripHop logo"/>
+        </a>
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarContent" title="collapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href='/travels/index.html'
+                       class="nav-link">
+                        Home
+                    </a>
+                </li>
+            
+                <li class="nav-item">
+                    <a href='/travels/list/notes.html'
+                       class="nav-link">
+                        Notes
+                    </a>
+                </li>
+            
+                <li class="nav-item">
+                    <a href='/travels/list/videos.html'
+                       class="nav-link">
+                        Videos
+                    </a>
+                </li>
+            
+                <li class="nav-item">
+                    <a href='/travels/list/projects.html'
+                       class="nav-link">
+                        Station Strolls
+                    </a>
+                </li>
+            
+                <li class="nav-item">
+                    <a href='/travels/list/countries.html'
+                       class="nav-link">
+                        Places
+                    </a>
+                </li>
+            
+                <li class="nav-item">
+                    <a href='/travels/about.html'
+                       class="nav-link">
+                        About
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+<div class="container site-container" id="top">
+    <div class="row">
+        <div class="d-none d-lg-block col-lg-4 col-xl-4 side">
+            
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="sticky-top space-before">
+    <div class="card bg-light">
+        <div class="card-body p-2">
+            <div class="card-title">
+                <h5>Filter by Tag</h5>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+        </div>
+        <div class="col-md-12 col-lg-8 col-xl-8 pb-4 content">
+            <h5 class="list-title border border-left-0 border-right-0 py-2">
+    All posts by year
+</h5>
+
+<h1 class="border border-top-0 border-right-0 border-left-0 mb-3 pb-2"> </h1>
+
+<div class="d-md-block d-lg-none mb-3">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="sticky-top space-before">
+    <div class="card bg-light">
+        <div class="card-body p-2">
+            <div class="card-title">
+                <h5>Filter by Tag</h5>
+            </div>
+            
+        </div>
+    </div>
+</div>
+</div>
+
+<div id="currently-showing">
+    <h2 class="d-flex align-items-center mb-3">
+        <span class="text-secondary mr-2">Showing everything matching:</span>
+        <span class="border rounded p-2 mr-2 bg-light text-secondary" id="active-tag"></span>
+        <a class="btn btn-primary btn-small" href="javascript:void(0)" onclick="clearTags()">clear</a>
+    </h4>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+    var parseHash = function() {
+        if (document.location.hash.length > 0) {
+            var tag = document.location.hash.slice(1)
+            var name = $(".tag-" + tag).first().text()
+            showPostByTag(tag, name)
+        }
+        else {
+            clearTags()
+        }
+    }
+
+    $(document).ready(parseHash);
+
+    $(window).on('hashchange', parseHash);
+
+    var showPostByTag = function(tag, name) {
+        $("#currently-showing").show()
+        $(".card-post").hide()
+        $(".tag").removeClass("bg-warning")
+            .addClass("bg-white")
+            .removeClass("text-dark")
+        $(".card-post").each(function(idx, card) {
+            var matches = $(card).find(".tag-" + tag)
+            if (matches.length > 0) $(card).show()
+        })
+        $(".tag-" + tag).removeClass("bg-white")
+            .addClass("bg-warning")
+            .addClass("text-dark")
+            .blur()
+        $("#active-tag").html(name)
+    }
+
+    var clearTags = function() {
+        $("#currently-showing").hide()
+        $(".card-post").show()
+        $(".tag").removeClass("bg-warning")
+            .addClass("bg-white")
+            .removeClass("text-dark")
+        document.location.hash = ""
+    }
+
+</script>
+
+        </div>
+        <div class="col-md-12 d-lg-none bottom">
+            <div class="col-md-12" style="margin-top:20px">
+    <a href="https://tp.media/click?shmarker=505720&promo_id=8718&source_type=banner&type=click&campaign_id=69&trs=285507" target="_blank"> <img src="https://c69.travelpayouts.com/content?promo_id=8718&shmarker=505720&type=init&trs=285507" width="300" height="250" alt="RailEurope"> </a> 
+    <a href="https://tp.media/click?shmarker=505720&promo_id=2058&source_type=banner&type=click&campaign_id=84&trs=285507" target="_blank"> <img src="https://c84.travelpayouts.com/content?promo_id=2058&shmarker=505720&type=init&trs=285507" width="300" height="252" alt="Booking.com"> </a>
+</div>
+
+
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+(function () {
+    'use strict'
+
+    if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+        var msViewportStyle = document.createElement('style')
+        msViewportStyle.appendChild(
+            document.createTextNode(
+                '@-ms-viewport{width:auto!important}'
+            )
+        )
+        document.head.appendChild(msViewportStyle)
+    }
+}())
+</script>
+
+</body>
+
+</html>

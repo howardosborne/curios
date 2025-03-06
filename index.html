@@ -1,5 +1,507 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta http-equiv="refresh" content="0; url=https://trip-hop.info/" />
+	<meta charset="UTF-8">
+	<meta name="description" content="Create your own trip across Europe by train, boat, bus and coach. Over 700 great destinations all waiting for you to discover.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+		integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
+	<link rel="stylesheet" href="/static/css/leaflet-sidepanel.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+	<link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" rel="stylesheet">
+	<link href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+    <link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"></link>
+	<meta name="p:domain_verify" content="c9b7cbcb31ceb39806c000d0d0d4881c"/>
+	<link rel="stylesheet" href="/static/css/main.css">
+	<title>TripHop - plan your next trip one hop at a time</title>
+	<link rel="icon" type="image/png" href="/static/icons/triphop_icon.png">
 </head>
+
+<body onload="startUp()">
+	<header class="header">
+	</header>
+	<!-- Map ID -->
+	<div id="map">
+		<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasPlace" aria-labelledby="offcanvasPlaceLabel">
+			<div class="offcanvas-header">
+				  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			</div>
+			<div class="offcanvas-body">
+				
+			</div>
+		</div>
+		<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTravelDetails" aria-labelledby="offcanvasTravelDetailsLabel">
+			<div class="offcanvas-header">
+				  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			</div>
+			<div class="offcanvas-body">
+				<h5>Travel options</h5>
+			</div>
+		</div>
+		<!-- Side Panel left -->
+		<div id="mySidepanelLeft" class="sidepanel" aria-label="side panel" aria-hidden="false">
+			<div class="sidepanel-inner-wrapper">
+				<nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
+					<ul class="sidepanel-tabs">
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-home" onclick="showHomeTab()">
+								<img src="/static/icons/triphop_3.png" class="card-img-top" alt="TripHop icon">
+							</a>
+						</li>
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-inspire" title="Inspired ideas" onclick="showInspireTab()">
+								<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-80q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-200v-80h320v80H320Zm10-120q-69-41-109.5-110T180-580q0-125 87.5-212.5T480-880q125 0 212.5 87.5T780-580q0 81-40.5 150T630-320H330Zm24-80h252q45-32 69.5-79T700-580q0-92-64-156t-156-64q-92 0-156 64t-64 156q0 54 24.5 101t69.5 79Zm126 0Z"/></svg>
+							</a>
+						</li>
+						<!--
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-destination" title="Pick a destination" onclick="showDestinationTab()">
+								<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q146 0 255.5 91.5T872-559h-82q-19-73-68.5-130.5T600-776v16q0 33-23.5 56.5T520-680h-80v80q0 17-11.5 28.5T400-560h-80v80h80v120h-40L168-552q-3 18-5.5 36t-2.5 36q0 131 92 225t228 95v80Zm364-20L716-228q-21 12-45 20t-51 8q-75 0-127.5-52.5T440-380q0-75 52.5-127.5T620-560q75 0 127.5 52.5T800-380q0 27-8 51t-20 45l128 128-56 56ZM620-280q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Z"/></svg>
+							</a>
+						</li>
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-live-departures" onclick="showLiveTab()" title="Live departures">
+								<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m786-624 30-30-76-74v-112h-40v128l86 88ZM260-280q25 0 42.5-17.5T320-340q0-25-17.5-42.5T260-400q-25 0-42.5 17.5T200-340q0 25 17.5 42.5T260-280Zm280 0q25 0 42.5-17.5T600-340q0-25-17.5-42.5T540-400q-25 0-42.5 17.5T480-340q0 25 17.5 42.5T540-280ZM160-80q-17 0-28.5-11.5T120-120v-82q-18-20-29-44.5T80-300v-380q0-30 11.5-60.5t51-54.5Q182-819 259-831.5t207-6.5q-8 19-13.5 38.5T444-760q-112-3-177 8t-89 32h262q0 20 3 40t9 40H160v120h364q38 38 88.5 59T720-440v140q0 29-11 53.5T680-202v82q0 17-11.5 28.5T640-80h-40q-17 0-28.5-11.5T560-120v-40H240v40q0 17-11.5 28.5T200-80h-40Zm400-360H160h480-80Zm160-80q-83 0-141.5-58.5T520-720q0-83 58.5-141.5T720-920q83 0 141.5 58.5T920-720q0 83-58.5 141.5T720-520ZM240-240h320q33 0 56.5-23.5T640-320v-120H160v120q0 33 23.5 56.5T240-240Zm200-480H178h262Z"/></svg>
+							</a>
+						</li>
+						-->
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-blog" title="Blog">
+								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h440l200 200v440q0 33-23.5 56.5T760-120H200Zm0-80h560v-400H600v-160H200v560Zm80-80h400v-80H280v80Zm0-320h200v-80H280v80Zm0 160h400v-80H280v80Zm-80-320v160-160 560-560Z"/></svg>
+							</a>
+						</li>
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-videos" title="Videos">
+								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="m160-800 80 160h120l-80-160h80l80 160h120l-80-160h80l80 160h120l-80-160h120q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800Zm0 240v320h640v-320H160Zm0 0v320-320Z"/></svg>
+							</a>
+						</li>
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-buying-tickets" title="Practical info">
+								<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>							
+							</a>
+						</li>
+						<li class="sidepanel-tab">
+							<a href="#" class="sidebar-tab-link" data-tab-link="tab-about" title="About">
+							<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#5f6368"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Zm80-80h480v-32q0-11-5.5-20T700-306q-54-27-109-40.5T480-360q-56 0-111 13.5T260-306q-9 5-14.5 14t-5.5 20v32Zm240-320q33 0 56.5-23.5T560-640q0-33-23.5-56.5T480-720q-33 0-56.5 23.5T400-640q0 33 23.5 56.5T480-560Zm0-80Zm0 400Z"/></svg>
+							</a>
+						</li>
+					</ul>
+				</nav>
+				<div class="sidepanel-content-wrapper">
+					<div class="sidepanel-content">
+						<div class="sidepanel-tab-content" data-tab-content="tab-home">
+							<div id="homeWelcome" hidden="false">
+								<div class="row">
+									<div class="col-3"><img src="/static/icons/triphop_3.png" class="card-img-top" alt="TripHop icon"></div>
+									<div class="col">
+										<span class="triphoporange" style="font-family: 'Cantora One', Arial; font-weight: 700; font-size: 1.25rem">plan your next trip</span>
+										<br>
+										<span class="triphopgreen" style="font-family: 'Cantora One', Arial; font-weight: 700; font-size: 1.25rem">one hop at a time</span>
+									</div>
+								</div>
+								<div id="welcomeMessage">
+									<p>
+										It's time to think about travel differently.
+										<br>Let's explore Europe one hop at a time.
+									</p>
+									<p>Pick a <a href="#" style="font-weight: 700;" onclick="hideSidepanal()">start point</a> and see where you can go in a single hop. Stay as little or as long as you like and move on
+									</p>
+									<!--
+									<p><em>Have a destination in mind?</em>
+										<br>See the fab places you can <a href="#" style="font-weight: 700;" onclick="showDestinationTab()">visit on the way</a> 
+									</p>
+									-->
+									<p><em>Need some inspiration?</em>
+										<br>Why not start with <a href="#" style="font-weight: 700;" onclick="showInspireTab()">one of these ideas</a>
+										<br>...or <a href="#" style="font-weight: 700;" onclick="showSidepanelTab('tab-blog')">read my blog</a>
+									</p>
+								</div>
+							</div>
+							<div id="freestyleBody"></div>
+							<div id="savedTripDiv" class="card" hidden="true">
+								<div class="card-header">
+									<a data-bs-toggle="collapse" href="#savedTrips" aria-expanded="false" aria-controls="savedTrips">
+								  		Saved Trips
+									</a>
+						  		</div>
+							  	<div class="collapse" id="savedTrips">
+									<div class="card-body">
+										<div id="savedTripList"></div>
+									</div>
+							  	</div>
+							</div>
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-inspire">
+							<h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Inspired Ideas</h4>
+
+							<div id="inspireBody"></div>
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-destination">
+							<h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Find a route</h4>
+							<p>See the fab places you can visit on the way to your destination
+							</p>
+							<div class="row">
+								<div class="col">
+								<input id="startSelect" type="text" autocomplete="off" list="startList" oninput="getStartStops()" placeholder="starting from" onchange="enableFindFabRoutes()"></input>
+								<datalist id="startList"></datalist>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+								<input id="destinationSelect" type="text" autocomplete="off" list="destinationList" oninput="getDestinationStops()" placeholder="destination" onchange="enableFindFabRoutes()"></input>
+								<datalist id="destinationList"></datalist>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col">
+								<input type="datetime-local" id="departureTime" name="departureTime">
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col">
+									<button id="findFabRoutes" class="btn btn-success" style="background-color:#abc837ff" onclick="findFabRoutes()" disabled="true">Find fab routes!</button> 
+								</div>
+							</div>
+							<div id="fromToResults"></div>
+							<div id="spinner" class="spinner-border" role="status" hidden="true">
+							</div>
+							<div id="fromToBody" hidden="true"></div>
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-about">
+							<h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">About</h4>
+							<div>
+							<blockquote class="blockquote">
+								<p><em>
+									It is good to have an end to journey toward, but it is the journey that matters in the end.
+								</em></p>
+								<footer class="blockquote-footer">Ernest Hemingway</footer>
+							</blockquote>
+							<p>
+									It's time to think about travel differently. To discover the places in between.
+									TripHop can show you directly connected places by train, coach or boat.
+								</p>
+							</div>
+							<h5>About me</h5>
+							<img src="/static/icons/me.jpg" class="card-img-top" alt="me">
+							<div>
+								<p>
+									Hi, I'm Howard.
+									<br>
+									Over the last few years, I've been travelling around Europe and seeing what our fab continent has to offer.
+									These days I'm less interested in where I'm going <em>to</em> and want to know more about where I'm going <em>through</em>.
+									I love getting off the train (or coach - I've become a fan) and going for a mooch around the places I used to fly over.
+									The trouble is that transport information is a bit of a mess. I've made TripHop to try and make planning trips a bit easier - and maybe a bit more fun.
+									<br>This site is currently in Beta - your feedback will help me make it as useful as possible. Email me <a href="mailto:trip.hop.travel.info@gmail.com">here</a>  or fill in <a href="https://forms.gle/EmZCoevApajNutBm9" target="_blank">this form</a>. Thanks.
+								</p>
+							</div>
+							<h5>Sources of inspiration</h5>
+							<div>
+								<p>Here are some sites that have inspired me.
+							<br>
+								</p>
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item"><a href="https://seat61.com" target="_blank">Seat61</a> - <em>the</em> authoritive source on travelling the world by train</li>
+									<li class="list-group-item"><a href="https://flightfree.co.uk" target="_blank">FlightFreeUK</a> - campaign group with bags of ideas for promoting green travel</li>
+									<li class="list-group-item"><a href="https://www.eurorailcampaignuk.org/" target="_blank">European Rail Campaign (UK)</a> - campaign for better rail links to and from the UK and across Europe</li>
+									<li class="list-group-item"><a href="https://back-on-track.eu" target="_blank">Back on Track</a> - promting more night trains across Europe</li>
+									<li class="list-group-item"><a href="https://www.byway.travel/" target="_blank">Byway Travel</a> - train-based travel agency</li>
+									<li class="list-group-item">...and my blog <a href="https://triphop.info/travels/" target="_blank">TripHop Travels</a></li>
+								  </ul>	
+							</div>
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-buying-tickets">
+							<h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Practical info</h4>
+							<h5 style="margin-top:10px;">Tickets</h5>
+							<p>There are <em>so</em> many ways to buy tickets for travel by train, coach and boat. Most operators have their own websites and there are links in the travel details of each hop. However, you may find it more convenient using a ticketing specialist when travelling with more that one operator. Here are some options:</p>
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item"><a href="https://trainline.tp.st/YSw3hfJ9" target="_blank">Trainline</a></li>
+									<li class="list-group-item"><a href="https://omio.tp.st/p3bESwp0" target="_blank">Omio</a></li>
+								  <li class="list-group-item"><a href="https://raileurope.tp.st/8Fh1Rhzz" target="_blank">RailEurope</a></li>
+								</ul>
+								<br>
+							<h5>Interrail</h5>	
+								<p>Buying an <a href="https://interrail.eu" target="_blank">Interrail Pass</a> makes a lot of sense if you want flexible travel on trains that would be expensive when booking last minute.</p>
+							<br>
+							<h5>Where to stay</h4>
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item"><a href="https://booking.tp.st/JFpi36Ld/" target="_blank">Booking.com</a></li>
+									<li class="list-group-item"><a href="https://vrbo.tp.st/V3hK9T1Z" target="_blank">Vrbo</a></li>
+									<li class="list-group-item"><a href="https://hostelworld.tp.st/kXriQ07L" target="_blank">Hostelworld</a></li>
+								</ul>
+							<br>
+							<h5>Useful sites</h5>
+							<p class="card-text">If you'd like to see what there is to see and do, here are some sites with ideas:</p>
+							<ul class="list-group list-group-flush">
+							<li class="list-group-item"><a href="https://internationalgreeter.org/" target="_blank">Greeters</a></li>
+							<li class="list-group-item"><a href="https://tripadvisor.tp.st/iaDPCVsJ" target="_blank">TripAdvisor</a></li>
+							<li class="list-group-item"><a href="https://viator.tp.st/dxbdWqWw" target="_blank">Viator</a></li>
+							<li class="list-group-item"><a href="https://getyourguide.tp.st/j1O2V9WC" target="_blank">GetYourGuide</a></li>
+							<li class="list-group-item"><a href="https://gocity.tp.st/bJKfnqLg" target="_blank">Go City</a></li>
+							<li class="list-group-item"><a href="https://bikesbooking.tp.st/hzrEGoUL" target="_blank">BikesBooking.com</a></li>
+							<li class="list-group-item"><a href="https://wegotrip.tp.st/9RusUZKl" target="_blank">WeGoTrip</a></li>
+							<li class="list-group-item"><a href="https://www.komoot.com/" target="_blank">Komoot</a></li>
+							</ul>
+							<p>*<small>Just so you know, I get a small commission from some of the services offered in these links. This helps me run TripHop for free.</small></p>
+							<br>
+							<h5>Storing luggage</h5>
+							<p>
+								If you want to stroll without a care in the world, including your luggage, you could try using <a href="https://usebounce.com" target="_blank">Bounce</a> to find a place that will take your bags.
+							</p>
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-videos">
+							<h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Videos</h4>
+							<p>
+								Here are some videos I've made while traveling around - <a href="https://www.youtube.com/@trip.hop.travel" target="_blank">youtube.com/@trip.hop.travel</a>.
+							</p>
+							<div class="card">
+								<a href="https://youtu.be/GsBykrxaEG8" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/GsBykrxaEG8.jpg" class="card-img" style="max-height:300px" alt="Vennbahn - daytrip by bike!"></a>
+							<div class="card-body">
+							   <p class="card-text">Come along on a day-trip from Aachen for a cycle ride along the Vennbahn - a geo-political anomaly with dragons’ teeth</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/UfqMmlB00c0" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/UfqMmlB00c0.jpg" class="card-img" style="max-height:300px" alt="Vincent van Gogh's Arles"></a>
+							<div class="card-body">
+							   <p class="card-text">What was it about Arles in France’s Provence that inspired Vincent van Gogh to paint some of the world’s best loved art? Let’s go see!.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/8a63Y8LtIJY" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/8a63Y8LtIJY.jpg" class="card-img" style="max-height:300px" alt="Avignon - let's explore!"></a>
+							<div class="card-body">
+							   <p class="card-text">Let’s explore Avignon and see why it’s a world heritage gem.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/ffBvsCD018M" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/ffBvsCD018M.jpg" class="card-img" style="max-height:300px" alt="Morning on the Camino"></a>
+							<div class="card-body">
+							   <p class="card-text">Ever wondered what walking the Camino is like? I’ve come to the neat-as-a-pin town of Saint-Jean-Pied-de-Port which is one of the most popular starting points for the Camino Frances (French Way)…</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/izauUm5qt5w" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/izauUm5qt5w.jpg" class="card-img" style="max-height:300px" alt="Carpentras for foodies!"></a>
+							<div class="card-body">
+							   <p class="card-text">Let’s go see why Carpentras is a go to place for foodies and a great place to pop to by train.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/SPcjzbc-h1A" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/SPcjzbc-h1A.jpg" class="card-img" style="max-height:300px" alt="Gare du Nord to Gare de Lyon"></a>
+							<div class="card-body">
+							   <p class="card-text">If, like me, you like to travel and use trains, you may well need to cross Paris to get from one station to another. And while there’s plenty of advice on how to do this quickly and easily, I thought we could do something very Parisian instead. Let’s go for a stroll!</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/vGR3ipqyjes" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/vGR3ipqyjes.jpg" class="card-img" style="max-height:300px" alt="Dali Museum Figueres - what's on the outside?"></a>
+							<div class="card-body">
+							   <p class="card-text">Come with me and art expert Anna as we take a stroll through the surreal world of Salvador and explore the too-often-overlooked outdoor artworks at the Dali Theatre Museum in Figueres. We let Dali show us who - and what - he thought was worthy of praise, the lengths - and heights - he went to to pay homage to them and a delve into his richly-fed, unlocked mind. You’ll never look at bread, eggs or cheese in the same way again.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/YdwT-ir-9Z4" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/YdwT-ir-9Z4.jpg" class="card-img" style="max-height:300px" alt="Figueres - the bells!"></a>
+							<div class="card-body">
+							   <p class="card-text">Figueres is a great place to come to when travelling to Spain by train. I attempt to answer a question that’s been keeping me awake at night. Why do the bells ring every few minutes - even through the night…</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/CPvXzjLwAJw" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/CPvXzjLwAJw.jpg" class="card-img" style="max-height:300px" alt="Girona night time stroll"></a>
+							<div class="card-body">
+							   <p class="card-text">Let’s go on an evening walk around the medieval quarter of Girona and see the El Call - the Jewish quarter, and the Cathedral which provides a backdrop to Game of Thrones.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/tZwYQMQ35ng" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/tZwYQMQ35ng.jpg" class="card-img" style="max-height:300px" alt="Llançà - let's explore!"></a>
+							<div class="card-body">
+							   <p class="card-text">Let’s catch the train to Llançà on the Costa Brava and explore a curious feature on its crinkly coast - a little bit of the P-Line, Franco’s version of the Maginot Line and Siegfried Line.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/UoZUmpwOaOM" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/UoZUmpwOaOM.jpg" class="card-img" style="max-height:300px" alt="Nimes - let's explore!"></a>
+							<div class="card-body">
+							   <p class="card-text">Nîmes is a great place to stop when taking train to Spain. Let’s go for a walk from the Gare de Nimes and walk towards the Roman arena and then stroll through the town to the other Roman sites like the Maison Caree and the Tour Magne.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/SJZFgxoCzgc" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/SJZFgxoCzgc.jpg" class="card-img" style="max-height:300px" alt="Pamplona - let's go see!"></a>
+							<div class="card-body">
+							   <p class="card-text">I’m in the lively old city of Pamplona that’s brimming with things to explore and to help me find my way around the place, I’ve met up with local guide Mikel who’s been giving me some insider-info on how to make the most of my time here.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/hq7T6hMx4wE" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/hq7T6hMx4wE.jpg" class="card-img" style="max-height:300px" alt="Portbou - let's explore!"></a>
+							<div class="card-body">
+							   <p class="card-text">I’m in Portbou, a small Spanish border town that I’ve stopped off at on my way to Spain by train. I’ve come here to see a memorial to the eclectic thinker and flaneur Walter Benjamin.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/1jqMgQS1UIY" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/1jqMgQS1UIY.jpg" class="card-img" style="max-height:300px" alt="Let's walk from Spain to France - and see a slice of Cerdanya!"></a>
+							<div class="card-body">
+							   <p class="card-text">Let’s take the Smugglers’ Route from Puigcerda to Enveitg and walk over the border from Spain to France - and learn a bit of history on the way.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/wM-ZJNe4jhY" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/wM-ZJNe4jhY.jpg" class="card-img" style="max-height:300px" alt="Sete - let's explore the town"></a>
+							<div class="card-body">
+							   <p class="card-text">This time we go see Sète, which is a great place to go to by train and an ideal stopover on the way to Spain.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/H_OFA06ZgGw" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/H_OFA06ZgGw.jpg" class="card-img" style="max-height:300px" alt="Tagebau Hambach - the craziest sunbathing location ever!"></a>
+							<div class="card-body">
+							   <p class="card-text">Let’s go see one of the oddest places to sunbathe.</p>
+							</div>
+						</div>
+						
+							<div class="card">
+								<a href="https://youtu.be/G3ue2ru3sko" target="_blank" class="triptitle"><img loading="lazy" src="/assets/video_thumbnails/G3ue2ru3sko.jpg" class="card-img" style="max-height:300px" alt="Vic's disturbing murals"></a>
+							<div class="card-body">
+							   <p class="card-text">We’re stopping off at Vic to see and experience something unique. The walls of Sant Pere Cathedral are covered in incredible murals The murals of Josep Maria Sert were made to replace the ones destroyed during the Spanish Civil War. Painted while the Second World War was still tearing Europe apart, they offer a disturbing view of (in)humanity and perhaps, the power of redemption.</p>
+							</div>
+						</div>
+												
+														
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-blog">
+							<h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Blog</h4>
+							<p>
+								Here's a selection of things I've written about on my travels. You can find more at <a href="/travels" target="_blank">TripHop Travels</a>.
+							</p>
+							<div class="card">
+								<img loading="lazy" src="/assets/thumbnails/goran_tour_guide_slavonski_brod.jpg" class="card-img" style="max-height:300px" alt="A slice of Brod">
+								<div class="card-img-overlay">
+									<a href="/travels/notes/a-slice-of-brod.html" target="_blank" class="triptitle">A slice of Brod</a>
+								</div>
+								<div class="card-body">
+								   <p class="card-text">It’s a lot easier to learn from history when you’re with a good teacher and standing in the right place. Slavonski Brod is one of those places and I think Goran is the right teacher.</p>
+								</div>
+							</div>
+							
+							<div class="card">
+								<img loading="lazy" src="/assets/thumbnails/21a9e625f587f332a3040d723e301019.jpg" class="card-img" style="max-height:300px" alt="Barcelona by bike">
+								<div class="card-img-overlay">
+									<a href="/travels/notes/barcelona-by-bike.html" target="_blank" class="triptitle">Barcelona by bike</a>
+								</div>
+								<div class="card-body">
+								   <p class="card-text">I hadn’t planned to stop in Barcelona. I was just going to grab some breakfast on my way from Tarragona to the Pyrenees, but the pull of the pedals, spurred on by my time in Valencia, was too strong.</p>
+								</div>
+							</div>
+							
+							<div class="card">
+								<img loading="lazy" src="/assets/thumbnails/0329c3c7bd5af24f1c5ae1810797555f.jpg" class="card-img" style="max-height:300px" alt="Meet and Greet Lübeck">
+								<div class="card-img-overlay">
+									<a href="/travels/notes/meet-and-greet-lubeck.html" target="_blank" class="triptitle">Meet and Greet Lübeck</a>
+								</div>
+								<div class="card-body">
+								   <p class="card-text">It’s a beautiful Sunday morning in Lübeck, Germany and I’m meeting up with Jürgen and Andrea outside the Rathaus or town hall. They are volunteer Greeters and are going to show me around their town.</p>
+								</div>
+							</div>
+							
+							<div class="card">
+								<img loading="lazy" src="/assets/thumbnails/ff061552b739b25d5fafb843f0bb80e6.jpg" class="card-img" style="max-height:300px" alt="The architecture tram">
+								<div class="card-img-overlay">
+									<a href="/travels/notes/the-architecure-tram.html" target="_blank" class="triptitle">The architecture tram</a>
+								</div>
+								<div class="card-body">
+								   <p class="card-text">Finland is very proud of its architectural tradition. We can learn about that by taking a tram ride through the city, starting at the main railway station.</p>
+								</div>
+							</div>	
+
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-inspire-details">
+							<div class="offcanvas-header">
+								<button type="button" class="btn-close" aria-label="Close" onclick="showSidepanelTab('tab-inspire')"></button>
+							</div>
+						  	<div class="offcanvas-body">
+								<div><h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff" id="inspireTitle"></h4></div>
+								<div id="inspireDetailsBody"></div>
+						  	</div>
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-fromto-details">
+							<div class="offcanvas-header">
+								<button type="button" class="btn-close" aria-label="Close" onclick="showHome()"></button>
+							</div>
+							<div class="offcanvas-body">
+								<div><h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff" id="fromToTitle"></h4></div>
+								<div id="fromToDetailsBody"></div>
+							  </div>
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-place">
+							<div class="offcanvas-header">
+								<button type="button" class="btn-close" aria-label="Close" onclick="revertToPreviousTab()"></button>
+						  	</div>
+						  	<div class="offcanvas-body">
+								<div id="place_body">
+									<h3 class="offcanvas-title" style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff" id="placeDetailsTitle"></h3>
+									<div class="card">
+									  <img src="" class="card-img-top" alt="" title="" id="placeDetailsImage">
+									  <div class="card-body">
+										<p class="card-text" id="placeDetailsDescription"></p>
+									  </div>
+									  <span class="card-text" id="strolls"></span>
+									  <span class="card-text" id="videos"></span>
+									  <span class="card-text" id="worldHeritageSites"></span>
+									  <span class="card-text" id="aoSites"></span>
+									  <span class="card-text" id="bathingSites"></span>	
+									  <span class="card-text" id="links"></span>
+									</div>
+								</div>
+						  	</div>	
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-travel-details">
+							<div class="offcanvas-header">
+								<button type="button" class="btn-close" aria-label="Close" onclick="revertToPreviousTab()"></button>
+						  	</div>
+						  	<div class="offcanvas-body">
+								<div id="travel_details_body"></div>
+						  	</div>	
+						</div>
+						<div class="sidepanel-tab-content" data-tab-content="tab-live-departures">
+							<div class="offcanvas-header"></div>
+						  	<div class="offcanvas-body">
+								<div>
+									<h4 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Live departures</h4>
+									<p>There's something about looking at a live departure board that just inspires new adventures.</p>
+									<p>Pick a place and see where you can go.</p>
+									<input id="liveSelect" autocomplete="off" type="text" list="liveList" onchange="getLiveDepartures()" oninput="getLiveStops()" placeholder="Station"></input>
+									<datalist id="liveList"></datalist>
+								</div>
+								<div id="map_details"></div>
+								<div id="routes_from_places"></div>
+						  	</div>
+						  	<div id="departures_spinner" class="spinner-border" role="status" hidden="true"></div>
+						</div>	
+					</div>
+				</div>
+			</div>
+			<div class="sidepanel-toggle-container">
+				<button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
+			</div>
+		</div>	
+	<!-- Scripts -->
+	<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+		crossorigin=""></script>
+	<script src="/static/js/leaflet-sidepanel.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"></script>
+	<script src="/static/js/main.js"></script>
+</body>
+
 </html>

@@ -1,0 +1,127 @@
+
+html,
+body {
+  margin: 0;
+  font-family: 'Cantora One', Arial; 
+  height: 100%;
+  color: #1f1412;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header a {
+  font-size: 16px;
+  color: #abc837ff;
+  text-decoration: none;
+  margin-left: 24px;
+}
+
+.header a:hover {
+  color: #abc837ff;
+  text-decoration: underline;
+}
+
+.header a span {
+  margin-left: 4px;
+}
+
+.header a svg {
+  vertical-align: middle;
+}
+
+#map {
+  width: 100%;
+  height: 100vh;
+  border: 1px solid #1f1412;
+}
+
+@media all and (min-width: 1024px) {
+  #map {
+    height: 768px;
+    width: 100%;
+  }
+}
+
+.sidepanel-content {
+  font-size: 1rem;
+}
+
+.sidepanel-content h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.sidepanel-content a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #ff6600ff;
+  font-family: 'Cantora One', Arial;
+  transition: color 0.3s ease-in;
+  text-decoration: underline;
+}
+.list-group-item a{
+  color: #ff6600ff;
+}
+a:hover {
+  color: #abc837ff;
+  font-family: 'Cantora One', Arial;
+  text-decoration: underline;
+}
+
+a.triptitle {
+  font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:white; font-size: 1.25rem;
+}
+
+.sidepanel-content a:hover {
+  color: #abc837ff;
+  text-decoration: underline;
+}
+
+.triphoporange{ 
+  color:#ff6600ff;
+}
+
+.triphopgreen{ 
+  color:#abc837ff;
+}
+
+.marker-cluster-small {
+	background-color: rgba(171, 200, 55, 0.6);
+	}
+.marker-cluster-small div {
+	background-color: rgba(171, 200, 55, 0.6);
+	}
+
+.marker-cluster-medium {
+	background-color: rgba(171, 200, 55, 0.6);
+	}
+.marker-cluster-medium div {
+	background-color: rgba(171, 200, 55, 0.6);
+	}
+
+.marker-cluster-large {
+	background-color: rgba(171, 200, 55, 0.6);
+	}
+.marker-cluster-large div {
+	background-color: rgba(171, 200, 55, 0.6);
+	}
+
+input, select{
+    margin:3px;   
+    width: 200px;
+}
+
+button{
+  margin:3px;
+}
