@@ -130,6 +130,7 @@ function getAllHopsandShowPlaceMarkers(){
     addLookup('places_with_world_heritage_sites',`/static/places_with_world_heritage_sites.json`);
     addLookup('places_with_videos',`/static/places_with_videos.json`);
     addLookup('places_with_strolls',`/static/places_with_strolls.json`);
+    addLookup('places_with_greeters',`/static/places_with_greeters.json`);
     addLookup('links',`/static/links.json`);
     checkHref();
   }};
@@ -395,6 +396,24 @@ function setPlaceDetails(place_id){
   }
   else{
     document.getElementById("bathingSites").innerHTML = "";
+  }
+  if(lookup["places_with_greeters"] && lookup["places_with_greeters"][place_id]){
+    let output = `<h5>Greeters</h5>`;
+    Object.entries(lookup["places_with_greeters"][place_id]).forEach((entry) => {
+      const [id, greeter] = entry;
+      output += `
+    <div class="card mb-3">
+     <img src="${greeter.image_url}" class="img-fluid rounded-start" style="max-height:250px" alt="place image" title = "${greeter.place_name}">
+     <div class="card-img-overlay">
+       <div class="row justify-content-evenly"><div class="col"><a href="${greeter.greeter_page}" class="h3" style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:white; text-shadow:-1px 1px 0 #000, 1px 1px 0 #000;" target="_blank">${greeter.place_name}</a></div></div>
+     </div>
+     <p class="card-text">Why not meet a local greeter who will show you around their home town for free?</p>
+    </div>`
+    });
+    document.getElementById("greeters").innerHTML = `<div class="card-body">${output}</div>`;
+  }
+  else{
+    document.getElementById("greeters").innerHTML = "";
   }
 }
 
