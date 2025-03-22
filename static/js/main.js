@@ -1308,7 +1308,7 @@ function buildSummary(){
   let freestyleBody = `
   <div class="row justify-content-evenly">
     <div class="col-7">
-      <h5 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Starting at ${hops_items[0].properties.place_name}</h5></div><div class="col" style="float: right;"><img src="/static/icons/save.png" onclick="checkSavingConsent()" title="save" alt="save">  <img src="/static/icons/delete.png" onclick="startAgain()" title="start again" alt="start again"> <small id="tripMessage"></small>
+      <h5 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">Starting at ${hops_items[0].properties.place_name}</h5></div><div class="col" style="float: right;"><img src="/static/icons/save.png" onclick="checkSavingConsent()" title="save" alt="save">  <img src="/static/icons/delete.png" onclick="startAgain()" title="start again" alt="start again"> <img src="/static/icons/share.png" onclick="share()" title="share" alt="share"> <small id="tripMessage"></small>
     </div>
 	<div id="settingsSection">
       <input class="form-check-input" type="checkbox" style="background-color:#ff6600ff" id="train" ${modes["train"]} onchange="checkChanged('train')">
@@ -2180,4 +2180,16 @@ function addSharedHops(items){
 function chooseNextPlace(place_id){
   getHops(place_id); 
   buildSummary();
+}
+
+function share() {
+  let hops_items = hops.getLayers();
+  let hopIds = [];
+  for(let i=0;i< hops_items.length;i++){
+    hopIds.push(`"${hops_items[i].properties.place_id}"`);
+  }
+  let sharableLink = `https://triphop.info/?action=share&hops=[${hopIds.join(",")}]`
+  // Copy the text inside the text field
+  navigator.clipboard.writeText(sharableLink); 
+  alert("hops copied to clipboard - share a link with your friends!");
 }
