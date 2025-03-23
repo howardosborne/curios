@@ -2080,26 +2080,6 @@ function _fromToRouteLineClicked(e){
   showFromToTripOnMap(encodeURIComponent(e.sourceTarget.properties.id));
 }
 
-function chooseRandomPlace(){
-  let cands = document.getElementsByClassName("candidates");
-  let randomItem = Math.floor(Math.random() * cands.length);;
-  for(let i=0;i<randomItem+1;i++){
-    let cand = cands[i];
-    let delay = 1000;
-    if(randomItem>4){delay = Math.floor(5000/randomItem)}
-    if(i==randomItem){setTimeout(showRandomPlace,i*delay,cand,true);}
-    else{setTimeout(showRandomPlace,i*delay,cand,false);}
-  }
-}
-
-function showRandomPlace(item,add){
-  item.onclick();
-  if(add){
-    setTimeout(_addToTrip(),2000);
-    setTimeout(showSidepanelTab('tab-home'),3000);
-  } 
-}
-
 function addSharedHops(items){
   let hopsToAdd = JSON.parse(decodeURIComponent(items));
   freestyleStartPoints.clearLayers();
@@ -2172,7 +2152,7 @@ function addSharedHops(items){
     </div>
     </div>`;
     }
-    let nextHopSummary = `<div class="card"><div class="card-header">Where next? <span onclick="chooseNextPlace('${place.place_id}')" class="badge text-bg-secondary">next hop</span></div><div class="card-body"></div></div>`;
+    let nextHopSummary = `<div class="card"><div class="card-header">Where next? <span onclick="chooseNextPlace('${place.place_id}')" class="badge text-bg-secondary">pick next hop</span></div><div class="card-body"></div></div>`;
     freestyleBody += nextHopSummary;
     document.getElementById("freestyleBody").innerHTML = freestyleBody;
 
@@ -2191,5 +2171,39 @@ function share() {
   let sharableLink = `https://triphop.info/?action=share&hops=[${hopIds.join(",")}]`
   // Copy the text inside the text field
   navigator.clipboard.writeText(sharableLink); 
-  alert("hops copied to clipboard - share a link with your friends!");
+  alert("trip link copied to clipboard");
+}
+
+function chooseRandomPlace(){
+  let cands = document.getElementsByClassName("candidates");
+  let randomItem = Math.floor(Math.random() * cands.length);;
+  for(let i=0;i<randomItem+1;i++){
+    let cand = cands[i];
+    let delay = 1000;
+    if(randomItem>4){delay = Math.floor(5000/randomItem)}
+    if(i==randomItem){setTimeout(showRandomPlace,i*delay,cand,true);}
+    else{setTimeout(showRandomPlace,i*delay,cand,false);}
+  }
+}
+
+function showRandomPlace(item,add){
+  let myRepPlace = RegExp(".+'([^']+)'.+", 'g');
+  let oc = item.attributes['onclick'].value
+  let myArray = myRepPlace.exec(oc)
+  let place_id = myArray[1];
+  let ph = possibleHops.getLayers();
+  let place = all_places[place_id];
+  for(let i=0;i<ph.length;i++){
+    if(ph[i].properties.place_id ==place_id){
+      candidateHop = ph[i].properties;
+    }
+  }
+  popup = L.popup().setLatLng([place.place_lat,place.place_lon]).setContent(`<div><img src="/static/icons/hopping_icon.png"><span>${place.place_name}?<span></div>`).openOn(map);
+  setPlaceDetails(place_id);
+  var block = get_travel_details_block(candidateHop.details);
+  document.getElementById("travel_details_body").innerHTML = `<h5 style="font-family: 'Cantora One', Arial; font-weight: 700; vertical-align: baseline; color:#ff6600ff">${hops.getLayers()[hops.getLayers().length -1].properties.place_name} to ${place.place_name}</h5>${block}`;  
+  if(add){
+    setTimeout(_addToTrip(),2000);
+    setTimeout(showSidepanelTab('tab-home'),3000);
+  } 
 }
